@@ -18,6 +18,7 @@ body {
 	display: block;
 	margin: 0;
 	color: white;
+	top: -50px !important;
 }
 
 #canvas:focus {
@@ -111,7 +112,13 @@ body {
 		</style>
 		<link id='-gd-engine-icon' rel='icon' type='image/png' href='index.icon.png' />
 <link rel='apple-touch-icon' href='index.apple-touch-icon.png'/>
-
+<style>#canvas {
+	display: block;
+	margin: 0;
+	color: white;
+	top: -50px
+}
+</style>
 	</head>
 	<body>
 		<div id="video-container"></div>
@@ -181,7 +188,7 @@ if (!window.SharedArrayBuffer) {
 <script src="coi-serviceworker.min.js"></script>
 <script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":274912,"index.wasm":49219187},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":2619872,"index.wasm":49219187},"focusCanvas":true,"gdextensionLibs":[]};
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {

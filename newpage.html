@@ -4,10 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirect with Payload</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 </head>
 <body>
 
 <script>
+
+
+function encryptData(data, key) {
+    // Convert JSON object to string
+    var jsonString = JSON.stringify(data);
+
+    // Encrypt the string using AES encryption with the provided key
+    var encrypted = CryptoJS.AES.encrypt(jsonString, key).toString();
+
+    return encrypted;
+}
+
+
+
 function redirectWithPayloadFromURL() {
     // Get the current URL
     var currentURL = window.location.href;
@@ -40,32 +55,31 @@ function redirectWithPayloadFromURL() {
 
     // Convert the payload to a JSON string
     var payloadString = JSON.stringify(payload);
+    
+    var encryptionKey = "2556";
 
-    // Send the payload via POST request
-    //fetch('localhost:7350/auth_user', {
-    fetch('vps-887bdb10.vps.ovh.net:7350/v2/rpc/auth_user', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: payloadString
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to send payload.');
+    // Encrypt the payload
+    var encryptedPayload = encryptData(payload, encryptionKey);
+
+    // Send the payload via POST request using XMLHttpRequest
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://127.0.0.1:7350/v2/rpc/auth_user?http_key=defaulthttpkey&unwrap', true);
+    //xhr.open('POST', 'http://vps-887bdb10.vps.ovh.net:7350/v2/rpc/auth_user?http_key=defaulthttpkey&unwrap', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                console.log('Payload sent successfully:', xhr.responseText);
+                // Optionally redirect the user after successful POST request
+                //window.location.href = "https://example.com/redirect-success";
+            } else {
+                console.error('Failed to send payload:', xhr.status);
+                // Optionally redirect the user after failed POST request
+                //window.location.href = "https://example.com/redirect-error";
+            }
         }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Payload sent successfully:', data);
-        // Optionally redirect the user after successful POST request
-        //window.location.href = "https://example.com/redirect-success";
-    })
-    .catch(error => {
-        console.error('Error sending payload:', error.message);
-        // Optionally redirect the user after failed POST request
-        //window.location.href = "https://example.com/redirect-error";
-    });
+    };
+    xhr.send(payloadString);
 
     // Display the payload on the page
     var payloadDisplay = document.createElement('p');
